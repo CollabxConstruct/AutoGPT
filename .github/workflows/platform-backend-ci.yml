@@ -190,9 +190,9 @@ jobs:
       - name: Run pytest with coverage
         run: |
           if [[ "${{ runner.debug }}" == "1" ]]; then
-            poetry run pytest -s -vv -o log_cli=true -o log_cli_level=DEBUG
+            poetry run pytest -s -vv --cov=backend --cov-branch --cov-report=term-missing --cov-report=xml -o log_cli=true -o log_cli_level=DEBUG
           else
-            poetry run pytest -s -vv
+            poetry run pytest -s -vv --cov=backend --cov-branch --cov-report=term-missing --cov-report=xml
           fi
         if: success() || (failure() && steps.lint.outcome == 'failure')
         env:
@@ -207,6 +207,13 @@ jobs:
           REDIS_PASSWORD: "testpassword"
           ENCRYPTION_KEY: "dvziYgz0KSK8FENhju0ZYi8-fRTfAdlz6YLhdB_jhNw=" # DO NOT USE IN PRODUCTION!!
 
+      - name: Upload coverage reports to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: platform-backend,${{ runner.os }}
+
     env:
       CI: true
       PLAIN_OUTPUT: True
@@ -220,9 +227,3 @@ jobs:
       # the backend service, docker composes, and examples
       RABBITMQ_DEFAULT_USER: "rabbitmq_user_default"
       RABBITMQ_DEFAULT_PASS: "k0VMxyIJF9S35f3x2uaw5IWAl6Y536O7"
-
-      # - name: Upload coverage reports to Codecov
-      #   uses: codecov/codecov-action@v4
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     flags: backend,${{ runner.os }}

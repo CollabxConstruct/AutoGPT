@@ -50,6 +50,7 @@ psycopg2-binary = "^2.9.10"
 pydantic = { extras = ["email"], version = "^2.11.7" }
 pydantic-settings = "^2.10.1"
 pytest = "^8.4.1"
+pytest-cov = "^6.0"
 pytest-asyncio = "^1.1.0"
 python-dotenv = "^1.1.1"
 python-multipart = "^0.0.20"
@@ -128,6 +129,28 @@ asyncio_default_fixture_loop_scope = "session"
 filterwarnings = [
     "ignore:'audioop' is deprecated:DeprecationWarning:discord.player",
     "ignore:invalid escape sequence:DeprecationWarning:tweepy.api",
+]
+
+[tool.coverage.run]
+source = ["backend"]
+omit = [
+    "*/test/*",
+    "*_test.py",
+    "*_tests.py",
+    "*/conftest.py",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 0
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.",
+    "raise NotImplementedError",
+    "pass",
+    "except ImportError",
 ]
 
 [tool.ruff]

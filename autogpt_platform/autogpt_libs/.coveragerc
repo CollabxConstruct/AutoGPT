@@ -1,0 +1,9 @@
+[run]
+relative_files = true
+source = autogpt_libs
+omit =
+    *_test.py
+    *_tests.py
+
+[report]
+show_missing = true

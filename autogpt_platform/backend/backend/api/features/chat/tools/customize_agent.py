@@ -156,7 +156,6 @@ class CustomizeAgentTool(BaseTool):
             return ErrorResponse(
                 message="Failed to fetch the marketplace agent. Please try again.",
                 error="fetch_error",
-                details={"exception": str(e)},
                 session_id=session_id,
             )
 
@@ -179,7 +178,6 @@ class CustomizeAgentTool(BaseTool):
             return ErrorResponse(
                 message="Failed to fetch the agent configuration. Please try again.",
                 error="graph_fetch_error",
-                details={"exception": str(e)},
                 session_id=session_id,
             )
 
@@ -208,7 +206,6 @@ class CustomizeAgentTool(BaseTool):
                     "Please try again."
                 ),
                 error="customization_failed",
-                details={"agent_id": agent_id, "modifications": modifications[:100]},
                 session_id=session_id,
             )
 
@@ -232,12 +229,6 @@ class CustomizeAgentTool(BaseTool):
             return ErrorResponse(
                 message=user_message,
                 error=f"customization_failed:{error_type}",
-                details={
-                    "agent_id": agent_id,
-                    "modifications": modifications[:100],
-                    "service_error": error_msg,
-                    "error_type": error_type,
-                },
                 session_id=session_id,
             )
 
@@ -312,9 +303,9 @@ class CustomizeAgentTool(BaseTool):
                 session_id=session_id,
             )
         except Exception as e:
+            logger.error(f"Error saving customized agent: {e}")
             return ErrorResponse(
-                message=f"Failed to save the customized agent: {str(e)}",
+                message="Failed to save the customized agent. Please try again.",
                 error="save_failed",
-                details={"exception": str(e)},
                 session_id=session_id,
             )

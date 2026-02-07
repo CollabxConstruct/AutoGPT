@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Happy Birthday Eli!</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Dancing+Script:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1035 40%, #2d1b4e 70%, #1a1035 100%);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+    color: #f0e6d3;
+    padding: 20px;
+  }
+
+  /* Stars background */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle var(--duration) ease-in-out infinite;
+    opacity: 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: var(--max-opacity); transform: scale(1); }
+  }
+
+  /* Floating particles */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    font-size: 20px;
+    animation: floatUp var(--dur) linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.7; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 420px;
+    width: 100%;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .header h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffd700, #ffaa00, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.3));
+    line-height: 1.3;
+  }
+
+  .header .subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    color: #c9b8e8;
+    margin-top: 6px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .from-line {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #a094b8;
+    margin-top: 10px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    animation: fadeInDown 1s ease-out 0.3s both;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Treasure Chest */
+  .chest-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    cursor: pointer;
+    animation: fadeInUp 1s ease-out 0.5s both;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .chest-container:active {
+    transform: scale(0.97);
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .chest-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 200px; height: 200px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+  }
+
+  .chest {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px;
+    height: 130px;
+  }
+
+  /* Chest Body */
+  .chest-body {
+    position: absolute;
+    bottom: 0;
+    width: 160px;
+    height: 80px;
+    background: linear-gradient(180deg, #8B5E3C 0%, #6B3F1F 40%, #5A3018 100%);
+    border-radius: 8px 8px 12px 12px;
+    border: 3px solid #A0784C;
+    box-shadow:
+      inset 0 -8px 16px rgba(0,0,0,0.4),
+      0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .chest-body::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #A0784C, #C9A66B, #A0784C);
+    transform: translateY(-50%);
+  }
+
+  /* Metal corners */
+  .chest-corner {
+    position: absolute;
+    width: 18px; height: 18px;
+    border: 3px solid #C9A66B;
+    border-radius: 2px;
+  }
+  .chest-corner.tl { top: 4px; left: 4px; border-right: none; border-bottom: none; }
+  .chest-corner.tr { top: 4px; right: 4px; border-left: none; border-bottom: none; }
+  .chest-corner.bl { bottom: 4px; left: 4px; border-right: none; border-top: none; }
+  .chest-corner.br { bottom: 4px; right: 4px; border-left: none; border-top: none; }
+
+  /* Lock */
+  .chest-lock {
+    position: absolute;
+    bottom: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 32px;
+    z-index: 5;
+  }
+
+  .lock-body {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 18px;
+    background: linear-gradient(180deg, #ffd700, #daa520);
+    border-radius: 3px;
+    border: 2px solid #b8860b;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  .lock-body::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px; height: 6px;
+    background: #5a3018;
+    border-radius: 50%;
+  }
+
+  .lock-shackle {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    border: 3px solid #daa520;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+  }
+
+  /* Chest Lid */
+  .chest-lid {
+    position: absolute;
+    bottom: 72px;
+    width: 164px;
+    left: -2px;
+    height: 55px;
+    transform-origin: bottom center;
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 4;
+  }
+
+  .chest-lid-face {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #A0784C 0%, #8B5E3C 50%, #7A4F30 100%);
+    border-radius: 16px 16px 4px 4px;
+    border: 3px solid #A0784C;
+    box-shadow:
+      inset 0 4px 12px rgba(255,255,255,0.1),
+      0 -2px 8px rgba(0,0,0,0.3);
+    position: relative;
+  }
+
+  .chest-lid-face::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #A0784C, #C9A66B, #A0784C);
+    transform: translateY(-50%);
+  }
+
+  /* Lid metal band */
+  .lid-band {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 20px;
+    border: 3px solid #C9A66B;
+    border-radius: 4px;
+    background: rgba(201, 166, 107, 0.15);
+  }
+
+  .lid-band::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px; height: 8px;
+    background: #C9A66B;
+    border-radius: 50%;
+  }
+
+  /* Open state */
+  .chest-container.open .chest-lid {
+    transform: rotateX(-110deg);
+  }
+
+  .chest-container.open .chest-lock {
+    animation: lockFall 0.5s ease-in forwards;
+  }
+
+  @keyframes lockFall {
+    0% { transform: translateX(-50%) translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateX(-50%) translateY(60px) rotate(25deg); opacity: 0; }
+  }
+
+  /* Inside chest (visible when open) */
+  .chest-inside {
+    position: absolute;
+    bottom: 80px;
+    left: 5px;
+    width: 150px;
+    height: 40px;
+    background: linear-gradient(180deg, #3d2415 0%, #2a1a0e 100%);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .chest-container.open .chest-inside {
+    opacity: 1;
+  }
+
+  .chest-inside-dust {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dust-mote {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: rgba(200, 180, 140, 0.4);
+    border-radius: 50%;
+    animation: dustFloat 2s ease-in-out infinite;
+  }
+
+  @keyframes dustFloat {
+    0%, 100% { transform: translateY(0px); opacity: 0.3; }
+    50% { transform: translateY(-8px); opacity: 0.7; }
+  }
+
+  /* Tap prompt */
+  .tap-prompt {
+    text-align: center;
+    animation: fadeInUp 1s ease-out 0.8s both;
+  }
+
+  .tap-prompt p {
+    font-size: 0.95rem;
+    color: #c9b8e8;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+  }
+
+  .tap-icon {
+    display: inline-block;
+    animation: tapBounce 2s ease-in-out infinite;
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+
+  @keyframes tapBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Message overlay */
+  .message-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(10, 10, 26, 0);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background 0.5s ease;
+    padding: 20px;
+  }
+
+  .message-overlay.visible {
+    background: rgba(10, 10, 26, 0.85);
+    pointer-events: all;
+  }
+
+  .message-card {
+    background: linear-gradient(145deg, #1e1638 0%, #2a1f4e 50%, #1e1638 100%);
+    border: 1px solid rgba(201, 166, 107, 0.3);
+    border-radius: 20px;
+    padding: 36px 28px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .message-overlay.visible .message-card {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .message-emoji {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    display: block;
+    animation: none;
+  }
+
+  .message-overlay.visible .message-emoji {
+    animation: wiggle 0.6s ease-in-out 0.4s;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+  }
+
+  .message-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffd700;
+    margin-bottom: 12px;
+  }
+
+  .message-card p {
+    font-size: 1rem;
+    color: #c9b8e8;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .message-card .check-back {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    color: #ffaa00;
+    margin-top: 16px;
+    display: block;
+  }
+
+  .message-card .love-note {
+    font-size: 0.8rem;
+    color: #8a7aa8;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  .close-btn {
+    margin-top: 24px;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 170, 0, 0.1));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 30px;
+    color: #ffd700;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  .close-btn:hover, .close-btn:active {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 170, 0, 0.2));
+    transform: scale(1.03);
+  }
+
+  /* Confetti burst on open */
+  .confetti-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+  }
+
+  /* Shimmer on chest hover/idle */
+  .chest-shimmer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 16px 16px 12px 12px;
+  }
+
+  .chest-shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 40%,
+      rgba(255, 215, 0, 0.06) 45%,
+      rgba(255, 215, 0, 0.12) 50%,
+      rgba(255, 215, 0, 0.06) 55%,
+      transparent 60%
+    );
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(0deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(0deg); }
+  }
+
+  /* Footer */
+  .footer {
+    position: fixed;
+    bottom: 16px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #5a4e70;
+    z-index: 10;
+    animation: fadeInUp 1s ease-out 1.2s both;
+  }
+
+  /* Responsive tweaks */
+  @media (max-height: 600px) {
+    .content { gap: 12px; }
+    .chest-container { width: 180px; height: 180px; }
+    .header h1 { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Floating particles -->
+<div id="particles"></div>
+
+<!-- Main content -->
+<div class="content">
+  <div class="header">
+    <h1>Happy Birthday, Abba!</h1>
+    <div class="subtitle">Eli Darmon</div>
+  </div>
+
+  <div class="from-line">With love from Shahar</div>
+
+  <!-- Treasure Chest -->
+  <div class="chest-container" id="chest" onclick="openChest()">
+    <div class="chest-glow"></div>
+    <div class="chest">
+      <div class="chest-inside">
+        <div class="chest-inside-dust">
+          <div class="dust-mote" style="left:20%; animation-delay:0s;"></div>
+          <div class="dust-mote" style="left:50%; animation-delay:0.5s;"></div>
+          <div class="dust-mote" style="left:75%; animation-delay:1s;"></div>
+        </div>
+      </div>
+      <div class="chest-lid">
+        <div class="chest-lid-face">
+          <div class="lid-band"></div>
+          <div class="chest-shimmer"></div>
+        </div>
+      </div>
+      <div class="chest-lock">
+        <div class="lock-shackle"></div>
+        <div class="lock-body"></div>
+      </div>
+      <div class="chest-body">
+        <div class="chest-corner tl"></div>
+        <div class="chest-corner tr"></div>
+        <div class="chest-corner bl"></div>
+        <div class="chest-corner br"></div>
+        <div class="chest-shimmer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tap-prompt" id="tapPrompt">
+    <span class="tap-icon">&#128072;</span>
+    <p>Tap the chest to check for your gift</p>
+  </div>
+</div>
+
+<!-- Message overlay -->
+<div class="message-overlay" id="messageOverlay">
+  <div class="message-card">
+    <span class="message-emoji">&#128588;</span>
+    <h2>Uh-oh, no money yet!</h2>
+    <p>The chest is still empty... but something big is brewing.</p>
+    <span class="check-back">Please check again tomorrow!</span>
+    <p class="love-note">Your son is working hard to fill this chest with everything you deserve. Financial freedom is coming, Abba.</p>
+    <button class="close-btn" onclick="closeMessage()">Got it &#10024;</button>
+  </div>
+</div>
+
+<!-- Confetti container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<div class="footer">A gift from Shahar Darmon, with love</div>
+
+<script>
+  // Generate stars
+  (function createStars() {
+    const container = document.getElementById('stars');
+    const count = 80;
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.setProperty('--duration', (2 + Math.random() * 4) + 's');
+      star.style.setProperty('--max-opacity', (0.3 + Math.random() * 0.7).toString());
+      star.style.animationDelay = (Math.random() * 5) + 's';
+      star.style.width = (1 + Math.random() * 3) + 'px';
+      star.style.height = star.style.width;
+      container.appendChild(star);
+    }
+  })();
+
+  // Generate floating particles
+  (function createParticles() {
+    const container = document.getElementById('particles');
+    const emojis = ['\u2728', '\u2B50', '\u2734\uFE0F', '\u{1FA99}'];
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = emojis[i % emojis.length];
+      p.style.left = (5 + Math.random() * 90) + '%';
+      p.style.setProperty('--dur', (8 + Math.random() * 12) + 's');
+      p.style.animationDelay = (Math.random() * 15) + 's';
+      p.style.fontSize = (14 + Math.random() * 14) + 'px';
+      container.appendChild(p);
+    }
+  })();
+
+  let isOpen = false;
+
+  function openChest() {
+    if (isOpen) return;
+    isOpen = true;
+
+    const chest = document.getElementById('chest');
+    const tapPrompt = document.getElementById('tapPrompt');
+
+    chest.classList.add('open');
+    tapPrompt.style.opacity = '0';
+    tapPrompt.style.transition = 'opacity 0.3s ease';
+
+    // Small haptic feedback if available
+    if (navigator.vibrate) navigator.vibrate(50);
+
+    // Spawn confetti
+    spawnConfetti();
+
+    // Show message after chest opens
+    setTimeout(() => {
+      document.getElementById('messageOverlay').classList.add('visible');
+    }, 900);
+  }
+
+  function closeMessage() {
+    const overlay = document.getElementById('messageOverlay');
+    overlay.classList.remove('visible');
+
+    // Reset chest after a moment
+    setTimeout(() => {
+      const chest = document.getElementById('chest');
+      chest.classList.remove('open');
+      isOpen = false;
+
+      const tapPrompt = document.getElementById('tapPrompt');
+      tapPrompt.style.opacity = '1';
+    }, 500);
+  }
+
+  function spawnConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#a78bfa', '#fb923c', '#f472b6', '#34d399'];
+    const shapes = ['circle', 'square'];
+
+    for (let i = 0; i < 40; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      const size = 6 + Math.random() * 8;
+
+      piece.style.width = size + 'px';
+      piece.style.height = size + 'px';
+      piece.style.background = color;
+      piece.style.borderRadius = shape === 'circle' ? '50%' : '2px';
+
+      // Start from chest position (center-ish of screen)
+      piece.style.left = '50%';
+      piece.style.top = '45%';
+
+      container.appendChild(piece);
+
+      // Animate with JS for more control
+      const angle = (Math.PI * 2 * i) / 40 + (Math.random() - 0.5) * 0.5;
+      const velocity = 150 + Math.random() * 250;
+      const vx = Math.cos(angle) * velocity;
+      const vy = Math.sin(angle) * velocity - 200; // bias upward
+      const rotSpeed = (Math.random() - 0.5) * 720;
+
+      let x = 0, y = 0, rot = 0, t = 0;
+      const gravity = 500;
+
+      function animate() {
+        t += 0.016;
+        x = vx * t;
+        y = vy * t + 0.5 * gravity * t * t;
+        rot = rotSpeed * t;
+        const opacity = Math.max(0, 1 - t / 2);
+
+        piece.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+        piece.style.opacity = opacity;
+
+        if (opacity > 0) {
+          requestAnimationFrame(animate);
+        } else {
+          piece.remove();
+        }
+      }
+
+      // Stagger start
+      setTimeout(() => requestAnimationFrame(animate), Math.random() * 200);
+    }
+  }
+
+  // Close message on overlay click (outside card)
+  document.getElementById('messageOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeMessage();
+  });
+</script>
+</body>
+</html>

@@ -12,73 +12,27 @@ AutoGPT Platform is a graph-based workflow automation system for building, deplo
 - **Frontend** (`/frontend`): Next.js React application
 - **Shared Libraries** (`/autogpt_libs`): Common Python utilities
 
-## Essential Commands
+## Quick Start
 
-### Backend Development
+**See package-specific CLAUDE.md files for detailed commands:**
+- Backend: `/backend/CLAUDE.md` - Python/Poetry commands, testing, block development
+- Frontend: `/frontend/CLAUDE.md` - pnpm commands, component development, code style
 
-```bash
-# Install dependencies
-cd backend && poetry install
-
-# Run database migrations
-poetry run prisma migrate dev
-
-# Start all services (database, redis, rabbitmq, clamav)
-docker compose up -d
-
-# Run the backend server
-poetry run serve
-
-# Run tests
-poetry run test
-
-# Run specific test
-poetry run pytest path/to/test_file.py::test_function_name
-
-# Run block tests (tests that validate all blocks work correctly)
-poetry run pytest backend/blocks/test/test_block.py -xvs
-
-# Run tests for a specific block (e.g., GetCurrentTimeBlock)
-poetry run pytest 'backend/blocks/test/test_block.py::test_available_blocks[GetCurrentTimeBlock]' -xvs
-
-# Lint and format
-# prefer format if you want to just "fix" it and only get the errors that can't be autofixed
-poetry run format  # Black + isort
-poetry run lint    # ruff
-```
-
-More details can be found in TESTING.md
-
-#### Creating/Updating Snapshots
-
-When you first write a test or when the expected output changes:
+**Essential commands:**
 
 ```bash
-poetry run pytest path/to/test.py --snapshot-update
-```
+# Backend (from /backend)
+poetry install && poetry run prisma migrate dev
+docker compose up -d  # Start services (postgres, redis, rabbitmq, clamav)
+poetry run serve      # Start backend server
 
-⚠️ **Important**: Always review snapshot changes before committing! Use `git diff` to verify the changes are expected.
+# Frontend (from /frontend)
+pnpm install
+pnpm dev              # Start development server
 
-### Frontend Development
-
-```bash
-# Install dependencies
-cd frontend && npm install
-
-# Start development server
-npm run dev
-
-# Run E2E tests
-npm run test
-
-# Run Storybook for component development
-npm run storybook
-
-# Build production
-npm run build
-
-# Type checking
-npm run types
+# Testing
+poetry run test       # Backend tests
+pnpm test            # Frontend E2E tests
 ```
 
 ## Architecture Overview
@@ -149,31 +103,36 @@ Key models (defined in `/backend/schema.prisma`):
 
 ### Common Development Tasks
 
-**Adding a new block:**
+**Backend:**
+- Adding blocks: See `/backend/CLAUDE.md` for Block SDK guide and development workflow
+- Modifying API: Routes in `/backend/backend/server/routers/` with colocated tests
+- Testing: `poetry run test` - see `/backend/CLAUDE.md` for detailed test commands
 
-1. Create new file in `/backend/backend/blocks/`
-2. Inherit from `Block` base class
-3. Define input/output schemas
-4. Implement `run` method
-5. Register in block registry
-6. Generate the block uuid using `uuid.uuid4()`
+**Frontend:**
+- Feature development: See `/frontend/CLAUDE.md` for component patterns and code style
+- Components in `/frontend/src/components/` using shadcn/ui primitives
+- API client: Regenerate with `pnpm generate:api` after backend spec changes
 
-Note: when making many new blocks analyze the interfaces for each of these blcoks and picture if they would go well together in a graph based editor or would they struggle to connect productively?
-ex: do the inputs and outputs tie well together?
+### Common Gotchas
 
-**Modifying the API:**
+- **Prisma migrations**: Always run `poetry run prisma migrate dev` after pulling schema changes
+- **Port conflicts**: Default ports are 8000 (backend), 3000 (frontend), 5432 (postgres), 6379 (redis)
+- **Poetry environment**: All backend Python commands MUST use `poetry run` prefix
+- **Block UUIDs**: Generate with `uuid.uuid4()`, never reuse or hardcode
+- **API client sync**: Run `pnpm generate:api` in frontend after backend OpenAPI spec changes
+- **Block interfaces**: When creating multiple blocks, ensure inputs/outputs connect well in graph editor
 
-1. Update route in `/backend/backend/server/routers/`
-2. Add/update Pydantic models in same directory
-3. Write tests alongside the route file
-4. Run `poetry run test` to verify
+### Windows-Specific Setup
 
-**Frontend feature development:**
+**Docker Requirements:**
+- Ensure Docker Desktop uses WSL2 backend (Settings → General → "Use WSL 2 based engine")
+- Allocate at least 6GB RAM to Docker (Settings → Resources → Advanced)
+- ClamAV virus scanning may timeout initially - container takes ~2min to fully start
 
-1. Components go in `/frontend/src/components/`
-2. Use existing UI components from `/frontend/src/components/ui/`
-3. Add Storybook stories for new components
-4. Test with Playwright if user-facing
+**Common Windows Issues:**
+- Path issues: Use Git Bash if PowerShell has problems with quoted paths
+- File watching: Windows Defender may block hot-reload - add project folder to exclusions
+- Line endings: Ensure Git is configured with `core.autocrlf=input` to avoid CRLF issues
 
 ### Security Implementation
 
@@ -189,11 +148,11 @@ ex: do the inputs and outputs tie well together?
 
 ### Creating Pull Requests
 
-- Create the PR aginst the `dev` branch of the repository.
-- Ensure the branch name is descriptive (e.g., `feature/add-new-block`)/
-- Use conventional commit messages (see below)/
-- Fill out the .github/PULL_REQUEST_TEMPLATE.md template as the PR description/
-- Run the github pre-commit hooks to ensure code quality.
+- Create the PR against the `dev` branch of the repository
+- Ensure the branch name is descriptive (e.g., `feature/add-new-block`)
+- Use conventional commit messages (see below)
+- Fill out the `.github/PULL_REQUEST_TEMPLATE.md` template as the PR description
+- Run the github pre-commit hooks to ensure code quality
 
 ### Reviewing/Revising Pull Requests
 

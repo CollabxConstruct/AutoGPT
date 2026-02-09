@@ -54,7 +54,7 @@ pnpm types
 
 ## Feature Development
 
-See @CONTRIBUTING.md for complete patterns. Quick reference:
+See `/autogpt_platform/CONTRIBUTING.md` (if it exists) for complete patterns. Quick reference:
 
 1. **Pages**: Create in `src/app/(platform)/feature-name/page.tsx`
    - Extract component logic into custom hooks grouped by concern, not by component. Each hook should represent a cohesive domain of functionality (e.g., useSearch, useFilters, usePagination) rather than bundling all state into one useComponentState hook.
@@ -74,3 +74,63 @@ See @CONTRIBUTING.md for complete patterns. Quick reference:
    - Do not use `useCallback` or `useMemo` unless asked to optimise a given function
    - Do not type hook returns, let Typescript infer as much as possible
    - Never type with `any` unless a variable/attribute can ACTUALLY be of any type
+
+## Troubleshooting
+
+### pnpm Lockfile Conflicts
+
+```bash
+# Regenerate lockfile
+rm pnpm-lock.yaml
+pnpm install
+
+# Clear pnpm cache
+pnpm store prune
+pnpm install
+```
+
+### Next.js Dev Server Issues
+
+**Hot-reload not working:**
+- Windows Defender may block file watching - add project folder to exclusions
+- Try using turbo mode: `pnpm dev --turbo`
+- Restart dev server after changing `.env` files
+
+**Port already in use:**
+```bash
+# Kill process on port 3000 (PowerShell)
+Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process
+
+# Use different port
+pnpm dev -- --port 3001
+```
+
+### API Client Out of Sync
+
+```bash
+# Force regenerate API client
+pnpm generate:api:force
+
+# If still failing, check backend OpenAPI spec is valid
+cd ../backend
+poetry run app  # Ensure backend starts without errors
+```
+
+### Playwright Test Issues
+
+```bash
+# Install browsers (may be needed on fresh Windows install)
+pnpm exec playwright install
+
+# Install browser dependencies
+pnpm exec playwright install-deps
+
+# Run tests with debug output
+pnpm test:no-build --debug
+```
+
+### Windows-Specific Issues
+
+- **Line endings**: Ensure Git uses `core.autocrlf=input` to avoid CRLF issues
+- **Path length**: Enable long paths in Windows if build fails with path errors
+- **File watching limits**: If hot-reload is slow, increase file watcher limit or exclude `node_modules` from antivirus

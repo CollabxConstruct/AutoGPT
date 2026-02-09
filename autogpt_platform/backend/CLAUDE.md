@@ -37,7 +37,7 @@ poetry run format  # Black + isort
 poetry run lint    # ruff
 ```
 
-More details can be found in @TESTING.md
+More details can be found in `/autogpt_platform/TESTING.md` (if it exists)
 
 ### Creating/Updating Snapshots
 
@@ -49,39 +49,18 @@ poetry run pytest path/to/test.py --snapshot-update
 
 ⚠️ **Important**: Always review snapshot changes before committing! Use `git diff` to verify the changes are expected.
 
-## Architecture
+## Architecture Notes
 
-- **API Layer**: FastAPI with REST and WebSocket endpoints
-- **Database**: PostgreSQL with Prisma ORM, includes pgvector for embeddings
-- **Queue System**: RabbitMQ for async task processing
-- **Execution Engine**: Separate executor service processes agent workflows
-- **Authentication**: JWT-based with Supabase integration
-- **Security**: Cache protection middleware prevents sensitive data caching in browsers/proxies
-
-## Testing Approach
-
-- Uses pytest with snapshot testing for API responses
+See root `/CLAUDE.md` for full architecture overview. Backend-specific details:
 - Test files are colocated with source files (`*_test.py`)
-
-## Database Schema
-
-Key models (defined in `schema.prisma`):
-
-- `User`: Authentication and profile data
-- `AgentGraph`: Workflow definitions with version control
-- `AgentGraphExecution`: Execution history and results
-- `AgentNode`: Individual nodes in a workflow
-- `StoreListing`: Marketplace listings for sharing agents
-
-## Environment Configuration
-
-- **Backend**: `.env.default` (defaults) → `.env` (user overrides)
+- Pytest with snapshot testing for API responses
+- Environment: `.env.default` (defaults) → `.env` (user overrides)
 
 ## Common Development Tasks
 
 ### Adding a new block
 
-Follow the comprehensive [Block SDK Guide](@../../docs/content/platform/block-sdk-guide.md) which covers:
+Follow the comprehensive Block SDK Guide (see `/docs/content/platform/block-sdk-guide.md`) which covers:
 
 - Provider configuration with `ProviderBuilder`
 - Block schema definition
@@ -157,14 +136,54 @@ yield "image_url", result_url
 3. Write tests alongside the route file
 4. Run `poetry run test` to verify
 
-## Security Implementation
+## Backend-Specific Notes
 
-### Cache Protection Middleware
+- **Cache middleware**: See root `/CLAUDE.md` for security implementation details
+- **API routes**: Located in `backend/api/features/` with colocated tests
+- **Poetry required**: All Python commands MUST use `poetry run` prefix
 
-- Located in `backend/api/middleware/security.py`
-- Default behavior: Disables caching for ALL endpoints with `Cache-Control: no-store, no-cache, must-revalidate, private`
-- Uses an allow list approach - only explicitly permitted paths can be cached
-- Cacheable paths include: static assets (`static/*`, `_next/static/*`), health checks, public store pages, documentation
-- Prevents sensitive data (auth tokens, API keys, user data) from being cached by browsers/proxies
-- To allow caching for a new endpoint, add it to `CACHEABLE_PATHS` in the middleware
-- Applied to both main API server and external API applications
+## Troubleshooting
+
+### Poetry Issues
+
+```bash
+# Clear cache and reinstall
+poetry cache clear pypi --all
+poetry install --sync
+
+# Fix lock file issues
+rm poetry.lock
+poetry install
+```
+
+### Prisma Migration Issues
+
+```bash
+# Reset database (CAUTION: deletes all data)
+poetry run prisma migrate reset
+
+# Generate client without running migrations
+poetry run prisma generate
+
+# View migration status
+poetry run prisma migrate status
+```
+
+### Docker Service Not Starting
+
+```bash
+# Stop all services and remove volumes
+docker compose down -v
+
+# Rebuild and start fresh
+docker compose up -d --build
+
+# View logs for specific service
+docker compose logs -f postgres redis
+```
+
+### Windows-Specific Issues
+
+- **Prisma on Windows**: May need to install Visual C++ Redistributable if Prisma fails to generate
+- **Path length limits**: Enable long paths in Windows if you encounter path errors: `New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force`
+- **Line endings**: Ensure `.gitattributes` is properly configured to avoid CRLF issues in Python files

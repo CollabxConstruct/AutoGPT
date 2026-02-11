@@ -38,7 +38,7 @@ AutoGPT/
 ## Tech Stack Summary
 
 ### Platform Backend (`autogpt_platform/backend/`)
-- **Language:** Python 3.10-3.12
+- **Language:** Python 3.10-3.13
 - **Framework:** FastAPI 0.116+ with Uvicorn
 - **ORM:** Prisma 0.15+ (async Python client)
 - **Database:** PostgreSQL with pgvector
@@ -371,9 +371,9 @@ frontend/src/
 
 ### Database
 
-- **Schema file:** `/autogpt_platform/backend/schema.prisma` (845 lines, 24 models)
+- **Schema file:** `/autogpt_platform/backend/schema.prisma` (~1250 lines)
 - **Key models:** User, UserOnboarding, AgentGraph (versioned), AgentNode, AgentNodeLink, AgentBlock, AgentGraphExecution, AgentNodeExecution, AgentPreset, LibraryAgent, StoreListing, StoreListingVersion, StoreListingReview, APIKey, CreditTransaction, CreditRefundRequest, Profile, IntegrationWebhook, NotificationEvent, AnalyticsDetails, AnalyticsMetrics
-- **Migrations:** 74 Prisma migration files in `/backend/migrations/`
+- **Migrations:** 114+ Prisma migration files in `/backend/migrations/`
 - **Features:** pgvector for embeddings, materialized views for analytics, composite indexes
 
 ## Testing Approach
